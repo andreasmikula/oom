@@ -21,6 +21,7 @@ namespace Task4
         {
             if (price >= Price)
                 Price = price;
+            else
             throw new ArgumentOutOfRangeException("Your price " + price.ToString() + " is smaller than current price " + Price.ToString());
         }
 

@@ -29,7 +29,7 @@ namespace Task4
                 throw new ArgumentOutOfRangeException("Your price " + price.ToString() + " is smaller than current price " + Price.ToString());
         }
 
-        public override string ToString()
+        override public string ToString()
         {
             return String.Format("{0}, {1}, {2}, {3}, {4}\n", Band, Date, Location, Price.ToString(), Presence());
         }

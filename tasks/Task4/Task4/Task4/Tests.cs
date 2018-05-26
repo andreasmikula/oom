@@ -45,10 +45,10 @@ namespace Task4
         [Test]
         public void Test5()
         {
-            TicketID ticketid = new TicketID(4, 39M);
+            TicketID ticketid = new TicketID(4, 14M);
             Assert.IsTrue(ticketid.getID() == 4);
-            ticketid.updatePrice(38);
-            Assert.IsTrue(ticketid.getID() == 38);
+            ticketid.updatePrice(15);
+            Assert.IsFalse(ticketid.getID() == 15);
         }
 
         [Test]
