@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects; 
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,32 +11,49 @@ namespace Task6
     {
         static void Main(string[] args)
         {
-            IAttend[] attends = new IAttend[]
-                {
-            new Concert("Godsmack", "17.11.2018", "Arena Wien", 34),
-            new Concert("Lamb of God", "11.11.2018", "Stadthalle Wien", 54),
-            new TicketID(10, 37.90M),
-            new TicketID(11, 55.90M),
-                };
+            Subject<Concert> subject = new Subject<Concert>();
+            List<Concert> list1 = new List<Concert> { new Concert("Godsmack", "17.11.2018", "Arena Wien", 34), new Concert("Foo Fighter", "18.11.2018", "Stadthalle Wien", 79) };
+            List<Concert> list2 = new List<Concert>();
 
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.TypeNameHandling = TypeNameHandling.Auto;
-            settings.Formatting = Formatting.Indented;
+            subject.Subscribe<Concert>(x => list2.Add(x));
 
-            using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(System.IO.File.Open("jsonFile.json", System.IO.FileMode.Create)))
+            for (int i = 0; i < 2; i++)
             {
-
-                streamWriter.Write(JsonConvert.SerializeObject(attends, settings));
-                streamWriter.Flush();
-
+                subject.OnNext(list1[i]);
+                Console.WriteLine(list2[i].ToString());
             }
 
-            string json = System.IO.File.ReadAllText("jsonFile.json");
+            Console.WriteLine("Copied list.");
 
-            IAttend[] readCreatures = JsonConvert.DeserializeObject<IAttend[]>(json, settings);
+            for (int i = 10; i > 0; i--)
+            {
+                int counter = i;
+                Task<string> spinOff = Task.Run(() => longandHardWork(counter * 1000));
+                spinOff.ContinueWith(t => Console.WriteLine(t.Result));
+            }
 
-            Console.WriteLine(json);
+            Task<string> waity = longandHardWorkAsync(5000);
+            waity.ContinueWith(x => Console.WriteLine(x.Result));
+            Console.WriteLine("This should pop up before async finishes.");
 
+            //wait for sleepyheads to finish
+            System.Threading.Thread.Sleep(15000);
         }
+
+        private static string longandHardWork(int duration)
+        {
+            Console.WriteLine("received:" + duration);
+            System.Threading.Thread.Sleep(duration);
+            return "Sleep time: " + duration;
+        }
+
+        private static async Task<string> longandHardWorkAsync(int duration)
+        {
+            Console.WriteLine("async received:" + duration);
+            await Task.Delay(duration);
+
+            return "Sleep time asynchron: " + duration;
+        }
+
     }
 }

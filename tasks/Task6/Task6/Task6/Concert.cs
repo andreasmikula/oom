@@ -8,7 +8,7 @@ namespace Task6
 {
     class Concert : IAttend
     {
-        private string Band;
+        public string Band { get; private set; }
         public string Date { get; }
         public string Location { get; set; }
         public int Price { get; set; }
